@@ -1,81 +1,50 @@
-# SaaS Multi-App SSO Ecosystem 🚀
+# SaaS Multi-App SSO
 
-A comprehensive **Single Sign-On (SSO)** and **Role-Based Access Control (RBAC)** architecture demonstrating how to securely share authentication state across multiple discrete React applications utilizing a centralized Node.js Authentication Server.
+A full-stack Single Sign-On (SSO) and Role-Based Access Control (RBAC) system. It features a centralized Node.js authentication server and two React client applications that share authentication state seamlessly via HttpOnly JWT cookies.
 
-Designed with a premium enterprise dark-mode aesthetic utilizing modern CSS variables and Tailwind CSS v4.
+## Tech Stack
+- **Backend:** Node.js, Express, Sequelize (SQLite), Passport.js (Local/Google OAuth2), JWT
+- **Frontend:** React, Vite, Redux Toolkit, Tailwind CSS v4, Axios
+- **Infrastructure:** Docker Compose
 
----
+## Project Structure
+- `auth-server` (Port 5000) - Centralized authentication API and login portal.
+- `client-taskflow` (Port 3000) - Admin-only React application.
+- `client-zennotes` (Port 3001) - React application accessible by both Admins and Standard Users.
 
-## 🏗️ Architecture
+## Getting Started
 
-The ecosystem securely manages cross-app sessions utilizing **HttpOnly JWT Cookies** to thwart XSS attacks, alongside rigorous internal React **Axios Interceptors** to gracefully catch `401 Unauthorized` requests and facilitate rapid silent token refreshing.
-
-### Project Composition
-
-| Package | Port | Stack | Description | Access Tier |
-|---------|:----:|-------|-------------|-------------|
-| **Auth Server** | `:5000` | Express, Sequelize, SQLite, Passport.js | Centralized JWT issuance & robust user security | *Internal* |
-| **TaskFlow App** | `:3000` | React, Vite, Redux, Tailwind v4 | Enterprise task/kanban tool for administrators | **Admin Only** |
-| **ZenNotes App** | `:3001` | React, Vite, Redux, Tailwind v4 | Ecosystem documentation and user workflow portal | **Admin & User** |
-
----
-
-## ✨ Key Features
-
-- **Centralized Authentication (SSO)**: One login grants seamless localized access to both `client-taskflow` and `client-zennotes` without ever requiring a secondary sign-in.
-- **RBAC (Role-Based Access Control)**: Granularly protects frontend routes and backend APIs. Standard users traversing to Admin-only zones are intercepted and denied access instantly.
-- **HttpOnly Secure Tokens**: JSON Web Tokens for Access (15m expiration) and Refresh (7d expiration) exist safely within unreadable cookies isolated from browser JavaScript.
-- **Vite Development Proxies**: Resolves complex browser CORS and `SameSite` restrictions implicitly by leveraging identical origins via Vite API proxies during execution.
-- **Premium Glassmorphism UI**: Dynamic UI layers utilizing structural backdrop filters alongside `--color-*` root CSS theme extraction techniques.
-
----
-
-## 🚀 Getting Started
-
-You can run this project locally using native Node.js, or spin up the entire ecosystem instantly using Docker Compose.
-
-### Option A: 🐳 Run with Docker (Recommended)
-Docker will automatically orchestrate the Auth Server and both client apps, resolving networks seamlessly.
+### Option 1: Docker Compose (Recommended)
+Run the entire ecosystem simultaneously using Docker.
 
 ```bash
-# Start all 3 services in the background
 docker compose up -d
-
-# To stop the ecosystem
-docker compose down
 ```
+*To stop the containers, run `docker compose down`.*
 
-### Option B: 💻 Run Locally (Native Node.js)
-Ensure you have **Node.js** (v18+) installed. A zero-config SQLite database is securely utilized for frictionless immediate local deployment.
+### Option 2: Local Development (Node.js)
+Requires Node.js v18+.
 
-**1. Initialize the Auth Server**
+**1. Start the Auth Server**
 ```bash
 cd auth-server
 npm install
-npm run seed       # Seeds the SQLite database
-npm run dev        # Boots the Auth Server onto http://localhost:5000
+npm run seed  # Generates the local SQLite database
+npm run dev   # Starts on http://localhost:5000
 ```
 
-**2. Launch Client Applications (in separate terminals)**
+**2. Start the Client Applications (in separate terminals)**
 ```bash
-cd client-taskflow && npm install && npm run dev   # Port 3000
+cd client-taskflow && npm install && npm run dev
 ```
 ```bash
-cd client-zennotes && npm install && npm run dev   # Port 3001
+cd client-zennotes && npm install && npm run dev
 ```
 
-> **⚠️ Troubleshooting `EADDRINUSE` Errors:**
-> If you encounter an `Error: listen EADDRINUSE: address already in use :::5000` (or 3000/3001), it means you already have a terminal running the server in the background! Please close your previous running terminals or use `npx kill-port 5000` before starting a new instance.
+*(Note: If you encounter an `EADDRINUSE` error for port 5000, ensure you close any previous running terminal instances of the Auth Server).*
 
----
+## Demo Credentials
+Navigate to `http://localhost:3000` or `http://localhost:3001` in your browser. You will be redirected to the centralized login page.
 
-## 🔑 Demonstration Credentials
-
-Initiate navigation towards `http://localhost:3000` or `http://localhost:3001` to be forcefully redirected to the enterprise portal login. Use the following sandbox credentials to explore the dynamic navigation barriers.
-
-| Persona | Email | Password | Allowed Access |
-|---------|-------|----------|----------------|
-| **Administrator** | `admin@saas-ecosystem.com` | `admin123` | TaskFlow & ZenNotes |
-| **Standard User** | `user@saas-ecosystem.com` | `user123` | ZenNotes Only |
-
-> Note: Logging out from either application inherently purges the centralized HttpOnly cookies, cleanly terminating sessions system-wide.
+- **Admin Account:** `admin@saas-ecosystem.com` / `admin123` (Accesses both apps)
+- **User Account:** `user@saas-ecosystem.com` / `user123` (Accesses only ZenNotes)
