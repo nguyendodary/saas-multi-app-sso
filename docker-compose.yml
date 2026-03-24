@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  auth-server:
+    build: ./auth-server
+    container_name: auth-server
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./auth-server:/app
+      - /app/node_modules
+
+  taskflow:
+    build: ./client-taskflow
+    container_name: taskflow
+    ports:
+      - "3000:3000"
+    environment:
+      # Instruct Vite proxy to route API requests to the internal Docker network name
+      - PROXY_TARGET=http://auth-server:5000
+    depends_on:
+      - auth-server
+    volumes:
+      - ./client-taskflow:/app
+      - /app/node_modules
+
+  zennotes:
+    build: ./client-zennotes
+    container_name: zennotes
+    ports:
+      - "3001:3001"
+    environment:
+      # Instruct Vite proxy to route API requests to the internal Docker network name
+      - PROXY_TARGET=http://auth-server:5000
+    depends_on:
+      - auth-server
+    volumes:
+      - ./client-zennotes:/app
+      - /app/node_modules

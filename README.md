@@ -32,34 +32,40 @@ The ecosystem securely manages cross-app sessions utilizing **HttpOnly JWT Cooki
 
 ## 🚀 Getting Started
 
+You can run this project locally using native Node.js, or spin up the entire ecosystem instantly using Docker Compose.
+
+### Option A: 🐳 Run with Docker (Recommended)
+Docker will automatically orchestrate the Auth Server and both client apps, resolving networks seamlessly.
+
+```bash
+# Start all 3 services in the background
+docker compose up -d
+
+# To stop the ecosystem
+docker compose down
+```
+
+### Option B: 💻 Run Locally (Native Node.js)
 Ensure you have **Node.js** (v18+) installed. A zero-config SQLite database is securely utilized for frictionless immediate local deployment.
 
-### 1. Initialize the Auth Server and Database
-The Auth server drives the session ecosystem. Establishing it first will automatically seed the SQLite database with roles and credentials.
-
+**1. Initialize the Auth Server**
 ```bash
 cd auth-server
 npm install
-npm run seed       # Seeds the database with requisite testing roles and accounts
+npm run seed       # Seeds the SQLite database
 npm run dev        # Boots the Auth Server onto http://localhost:5000
 ```
 
-### 2. Launch the Client Applications
-Initialize TaskFlow securely in a new isolated terminal:
-
+**2. Launch Client Applications (in separate terminals)**
 ```bash
-cd client-taskflow
-npm install
-npm run dev        # Boots the Admin Application onto http://localhost:3000
+cd client-taskflow && npm install && npm run dev   # Port 3000
+```
+```bash
+cd client-zennotes && npm install && npm run dev   # Port 3001
 ```
 
-Initialize ZenNotes robustly in a tertiary terminal:
-
-```bash
-cd client-zennotes
-npm install
-npm run dev        # Boots the Generic Environment onto http://localhost:3001
-```
+> **⚠️ Troubleshooting `EADDRINUSE` Errors:**
+> If you encounter an `Error: listen EADDRINUSE: address already in use :::5000` (or 3000/3001), it means you already have a terminal running the server in the background! Please close your previous running terminals or use `npx kill-port 5000` before starting a new instance.
 
 ---
 
